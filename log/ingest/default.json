@@ -1,0 +1,49 @@
+{
+  "description": "Pipeline for parsing Neusoft Neteye Firewall logs.",
+  "processors": [{
+    "grok": {
+      "field": "message",
+      "pattern_definitions": {
+          "APACHE_TIME": "%{DAY} %{MON} %{MONTHDAY} %{TIME} %{YEAR}"
+      },
+      "patterns":[
+        "%{SYSLOGTIMESTAMP:timestamp} %{IPORHOST:host} %{GREEDYDATA} 名称:%{HOSTNAME:policy}, 原始地址:%{IPORHOST:source_ip}\\(%{POSINT:source_port}\\)-%{IPORHOST:dest_ip}\\(%{POSINT:dest_port}\\), 协议:%{POSINT:protocol}, 地址转换:%{DATA}, 安全域:%{DATA:domain}, 动作:%{WORD:action}。",
+        "%{SYSLOGTIMESTAMP:timestamp} %{IPORHOST:host} %{GREEDYDATA} 匹配到访问策略%{DATA:policy}， 原始地址：%{IPORHOST:source_ip}\\(%{POSINT:source_port}\\)->%{IPORHOST:dest_ip}\\(%{POSINT:dest_port}\\)， 协议：%{POSINT:protocol}，  转换后地址：%{DATA}， 安全域：%{DATA:domain}， 动作：%{GREEDYDATA:action}。",
+        "%{SYSLOGTIMESTAMP:timestamp} %{IPORHOST:host} %{GREEDYDATA} 名称:%{HOSTNAME:policy}, 地址:%{IPORHOST:source_ip}\\(%{POSINT:source_port}\\)-%{IPORHOST:dest_ip}\\(%{POSINT:dest_port}\\), 协议:%{POSINT:protocol}, 安全域:%{DATA:domain}。"
+      ],
+      "ignore_missing": true
+    }
+  },{
+    "set":{
+      "field": "type",
+      "value": "neteye.log"
+    }
+   },{
+    "remove":{
+      "field": "message"
+    }
+   },{
+    "remove":{
+      "field": "offset"
+    }
+   },{ 
+    "remove":{
+      "field": "beat"
+    }
+    },{      
+    "remove":{
+      "field": "fileset"
+    }
+  }, {
+    "rename": {
+      "field": "@timestamp",
+      "target_field": "read_timestamp"
+    }
+  }],
+  "on_failure" : [{
+    "set" : {
+      "field" : "error.message",
+      "value" : "{{ _ingest.on_failure_message }}"
+    }
+  }]
+}

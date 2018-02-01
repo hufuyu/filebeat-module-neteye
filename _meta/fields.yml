@@ -1,0 +1,43 @@
+- key: neteye
+  title: "neteye"
+  description: >
+    Module for parsing the neteye firewall log files.
+  fields:
+    - name: neteye
+      type: group
+      description: >
+        Fields from the neteye log files.
+      fields:
+        - name: log
+          type: group
+          description: >
+            Contains fields for the Neteye Firewall logs.
+          fields:
+            - name: host
+              type: keyword
+              description: >
+                Neteye Firewall host name or IP.
+            - name: policy
+              type: keyword
+              description: >
+                firewall policy name.
+            - name: source_ip
+              type: keyword
+              description: >
+                Source ip address.
+            - name: source_port
+              type: keyword
+              description: >
+                Source Port.
+            - name: dest_ip
+              type: keyword
+              description: >
+                Destion Address.
+            - name: dest_port
+              type: keyword
+              description: >
+                Destion Port.
+            - name: action
+              type: keyword
+              description: >
+                firewall policy action,accept or deny.

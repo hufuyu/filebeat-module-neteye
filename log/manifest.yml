@@ -1,0 +1,12 @@
+module_version: 1.0
+
+var:
+  - name: paths
+    default:
+      - d:\1101\20170930.02.(10.136.14.154).log*
+    os.darwin: [""]
+    os.windows: 
+      - d:\1101\20170929.20.(10.136.14.139).log
+      
+ingest_pipeline: ingest/default.json
+prospector: config/log.yml
